@@ -10,33 +10,36 @@ const getAllProdutos = (req, res) => {
     fornecedor,
     dataValidade,
     validade30dias,
-    quantidadeMenorQue
+    quantidadeMenorQue,
   } = req.query;
   let resultado = produtos;
 
-
   if (categoria) {
-    resultado = resultado.filter(p => p.categoria.toLowerCase().includes(categoria.toLowerCase()));
-  };
+    resultado = resultado.filter((p) =>
+      p.categoria.toLowerCase().includes(categoria.toLowerCase())
+    );
+  }
   if (fornecedor) {
-    resultado = resultado.filter(p => p.fornecedor.toLowerCase().includes(fornecedor.toLowerCase()));
-  };
+    resultado = resultado.filter((p) =>
+      p.fornecedor.toLowerCase().includes(fornecedor.toLowerCase())
+    );
+  }
   if (quantidadeMenorQue) {
-    resultado = resultado.filter(p => p.quantidade < parseInt(quantidadeMenorQue));
+    resultado = resultado.filter(
+      (p) => p.quantidade < parseInt(quantidadeMenorQue)
+    );
   };
-
-/*
+  
   if (validade30dias) {
     const hoje = new Date();
     const limite = new Date();
     limite.setDate(hoje.getDate() + 30);
 
-    resultado = resultado.filter(p => {
+    resultado = resultado.filter((p) => {
       const validade = new Date(p.dataValidade);
       return validade >= hoje && validade <= limite;
     });
-  }
-*/
+  };
 
   return res.status(200).json({
     total: resultado.length,
@@ -52,7 +55,7 @@ const getByIdProdutos = (req, res) => {
       success: false,
       message: `Coloque um ID válido do tipo number!`,
     });
-  }
+  };
   if (produto) {
     res.status(200).json({
       success: true,
@@ -63,7 +66,7 @@ const getByIdProdutos = (req, res) => {
       success: false,
       message: `Produto não existente com esse id ${id}`,
     });
-  }
+  };
 };
 
 const createProduto = (req, res) => {
@@ -91,9 +94,9 @@ const createProduto = (req, res) => {
   if (quantidade < 10) {
     res.status(400).json({
       success: false,
-      message: `O estoque está com menos de 10 unidades!`
-    })
-  }
+      message: `O estoque está com menos de 10 unidades!`,
+    });
+  };
 
   const novoProduto = {
     id: produtos.length + 1,
@@ -130,29 +133,30 @@ const updateProduto = (req, res) => {
   if (!produtoExiste) {
     return res.status(404).json({
       success: false,
-      message: `Produto não existente com esse id ${id}`
+      message: `Produto não existente com esse id ${id}`,
     });
   };
 
-  const produtoAtualizados = produtos.map(produto => produto.id === id
-    ? {
-      ...produto,
-      ...(nomeProduto && { nomeProduto }),
-      ...(categoria && { categoria }),
-      ...(precoUnitario && { precoUnitario: parseFloat(precoUnitario) }),
-      ...(fornecedor && { fornecedor }),
-      ...(quantidade && { quantidade: parseInt(quantidade) }),
-      ...(dataValidade && { dataValidade: new Date() })
-    }
-    : produto
+  const produtoAtualizados = produtos.map((produto) =>
+    produto.id === id
+      ? {
+          ...produto,
+          ...(nomeProduto && { nomeProduto }),
+          ...(categoria && { categoria }),
+          ...(precoUnitario && { precoUnitario: parseFloat(precoUnitario) }),
+          ...(fornecedor && { fornecedor }),
+          ...(quantidade && { quantidade: parseInt(quantidade) }),
+          ...(dataValidade && { dataValidade: new Date() }),
+        }
+      : produto
   );
   produtos.splice(0, produtos.length, ...produtoAtualizados);
-  const produtoEditado = produtos.find(p => p.id === id);
+  const produtoEditado = produtos.find((p) => p.id === id);
 
   return res.status(200).json({
     success: true,
     message: `Produto atualizado com sucesso!`,
-    produto: produtoEditado
+    produto: produtoEditado,
   });
 };
 
@@ -164,19 +168,25 @@ const deleteProduto = (req, res) => {
       message: `Coloque um ID válido do tipo number!`,
     });
   };
-  const produtoRemover = produtos.find(p => p.id === id);
+  const produtoRemover = produtos.find((p) => p.id === id);
   if (!produtoRemover) {
     return res.status(404).json({
       success: false,
-      message: `Esse produto não existe`
+      message: `Esse produto não existe`,
     });
-  }
-  const produtoFiltrado = produtos.filter(p => p.id !== id);
+  };
+  const produtoFiltrado = produtos.filter((p) => p.id !== id);
   produtos.splice(0, produtos.length, ...produtoFiltrado);
   return res.status(200).json({
     success: true,
-    message: `Produto removido com sucesso!`
+    message: `Produto removido com sucesso!`,
   });
 };
 
-export { getAllProdutos, getByIdProdutos, createProduto, updateProduto, deleteProduto };
+export {
+  getAllProdutos,
+  getByIdProdutos,
+  createProduto,
+  updateProduto,
+  deleteProduto,
+};
