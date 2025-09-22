@@ -10,6 +10,7 @@ const getAllProdutos = (req, res) => {
     fornecedor,
     dataValidade,
     validade30dias,
+    sort,
     quantidadeMenorQue,
   } = req.query;
   let resultado = produtos;
@@ -19,6 +20,17 @@ const getAllProdutos = (req, res) => {
       p.categoria.toLowerCase().includes(categoria.toLowerCase())
     );
   }
+  if(nomeProduto) {
+    resultado = resultado.filter(p => p.nomeProduto.toLowerCase().includes(nomeProduto.toLowerCase()));
+  }
+
+  // Ordenação - Extra
+  if(sort === "quantidade_asc"){
+    resultado.sort((a, b) => a.quantidade - b.quantidade);
+  } else if(sort === "quantidade_dec"){
+    resultado.sort((a, b) => b.quantidade - a.quantidade);
+  }
+
   if (fornecedor) {
     resultado = resultado.filter((p) =>
       p.fornecedor.toLowerCase().includes(fornecedor.toLowerCase())
@@ -29,13 +41,14 @@ const getAllProdutos = (req, res) => {
       (p) => p.quantidade < parseInt(quantidadeMenorQue)
     );
   };
-  
+
+  // provavelmente não funciona!
   if (validade30dias) {
     const hoje = new Date();
     const limite = new Date();
     limite.setDate(hoje.getDate() + 30);
 
-    resultado = resultado.filter((p) => {
+    resultado = resultado.filter(p => {
       const validade = new Date(p.dataValidade);
       return validade >= hoje && validade <= limite;
     });
