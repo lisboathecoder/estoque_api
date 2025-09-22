@@ -66,7 +66,7 @@ const produtos = [
     id: 8,
     nomeProduto: "Refrigerante Cola",
     categoria: "Bebidas",
-    quantidade: 200,
+    quantidade: 8,
     precoUnitario: 6.5,
     fornecedor: "Bebidas Refrescantes",
     dataValidade: "2024-12-05",
